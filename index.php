@@ -8,7 +8,10 @@ $db = new DB_Functions();
 
 $user = $_SESSION['user'];
 $user_info = $_SESSION['user_info'];
-
+//var_dump($user);
+//echo $user['id'];
+//var_dump($user_info);
+//exit;
 
 if (!empty($user)) {
   //echo("Succesful_login information:".$user["logid"]." : ".$user["login_at"]." : ".$user["loggout_at"]." : ".$user["id"]);
@@ -318,7 +321,7 @@ if (!empty($user)) {
               <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>Alexander Pierce</p>
+              <p><?php echo $user [name].":".$user[email] ?></p>
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
           </div>
