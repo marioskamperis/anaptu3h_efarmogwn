@@ -7,7 +7,6 @@
 </head>
 
 <body>
-
 <div class="wrapper">
     <div class="container">
         <h1>Proterotiapp Admin Panel</h1>
