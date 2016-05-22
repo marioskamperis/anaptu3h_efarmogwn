@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
 
+header('Content-Type: text/html; charset=utf-8');
 class DB_Functions
 {
 
@@ -50,12 +51,12 @@ class DB_Functions
 	public function loginUser($user_id, $ip, $browser)
 	{
 
-		$result = mysql_query("INSERT INTO user_info(login_at,loggout_at,user_id,ip_adress,is_alive,browser)
+		$result = mysql_query("INSERT INTO proteroetitapp.user_info(login_at,loggout_at,user_id,ip_adress,is_alive,browser)
                               VALUES(NOW(),NULL,$user_id,'$ip',NOW(),'$browser')");
 
 
 		$id = mysql_insert_id();; // Initializing Session
-		$user = mysql_query("SELECT * FROM user_info WHERE id = $id");
+		$user = mysql_query("SELECT * FROM proteroetitapp.user_info WHERE id = $id");
 
 		// check for successful store
 		if ( ! empty($user)) {
@@ -124,7 +125,7 @@ class DB_Functions
 	 */
 	public function getUserByEmailAndPassword($email, $password)
 	{
-		$result = mysql_query("SELECT * FROM users WHERE email = '$email'") or die(mysql_error());
+		$result = mysql_query("SELECT * FROM protereotitapp.users WHERE email = '$email'") or die(mysql_error());
 		// check for result
 
 		$no_of_rows = mysql_num_rows($result);
@@ -328,11 +329,21 @@ class DB_Functions
 	//Ticket things
 	public function checkPlace($place_id)
 	{
-		$place = mysql_query("SELECT * FROM places WHERE place_id = $place_id AND confirmed=1");
+		$sql = "SELECT place_id, confirmed FROM protereotitapp.places WHERE place_id = '$place_id'";
 
-		// check for successful store
-		if ( ! empty($place)) {
-			return mysql_fetch_array($place);
+		$response = mysql_query($sql);
+		if (mysql_num_rows($response) == 0) {
+			syslog(LOG_DEBUG, "Check Place return false");
+			return false;
+		}
+
+		$resdata = mysql_fetch_array($response);
+
+		syslog(LOG_DEBUG, "checkPlace " . print_r($resdata['place_id'], true));
+		syslog(LOG_DEBUG, "checkPlace " . print_r($resdata['confirmed'], true));
+
+		if ($resdata['confirmed'] == 1) {
+			return true;
 		} else {
 			return false;
 		}
@@ -341,6 +352,8 @@ class DB_Functions
 	public function addPlace($place)
 	{
 
+//		syslog(LOG_DEBUG,"Place: ".print_r($place,true));
+		mysql_set_charset("utf8");
 		$sql =
 			"
 INSERT INTO protereotitapp.places
@@ -357,6 +370,7 @@ VALUES(
 		0);";
 
 		$response = mysql_query($sql);
+//		syslog(LOG_DEBUG, "DB_Function : addPlace" . print_r($response, true));
 
 		// check for successful store
 		if ($response) {
