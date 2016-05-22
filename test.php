@@ -3,27 +3,31 @@
 </head>
 
 <script>
-$( document ).ready(function() {
-console.log( "ready!" );
-	$.ajax({
-		url: 'mobile_login.php',
-		data: {
-			email: 'marios@gmail.com',
-			password: 'marios',
-			is_mobile: 'true'
-		},
-		type: 'post',
-		success: function (output)
-		{
-			alert(output);
-		}
+	$(document).ready(function ()
+	{
+		console.log("ready!");
+		$.ajax({
+			url: 'book_ticket.php',
+			data: {
+				place_id: 'RYTDFYHG&*I%$^*(YH',
+				name: 'marios',
+				address: 'solomou 31',
+				lat: '27,3',
+				lon: '27,3',
+				telephone: 'ok',
+				website: 'www.marinetraffi.com',
+				user_id: '1245'
+			},
+			type: 'post',
+			success: function (output)
+			{
+				console.log(output);
+			}
 
+		})
+		;
+		console.log("done");
 	});
-	console.log("done");
-});
 
 
 </script>
-<?php
-echo "ok";
-?>

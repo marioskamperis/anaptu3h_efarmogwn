@@ -15,10 +15,8 @@ class DB_Connect {
     public function connect() {
         require_once 'Config.php';
         // connecting to mysql
-        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die(mysql_error());
-        // selecting database
-        mysql_select_db(DB_DATABASE) or die(mysql_error());
- 
+        $con = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD,DB_DATABASE) or die(mysql_error());
+
         // return database handler
         return $con;
     }
