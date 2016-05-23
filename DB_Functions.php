@@ -2,6 +2,7 @@
 error_reporting(E_ERROR | E_PARSE);
 
 header('Content-Type: text/html; charset=utf-8');
+
 class DB_Functions
 {
 
@@ -352,7 +353,7 @@ class DB_Functions
 	public function addPlace($place)
 	{
 
-//		syslog(LOG_DEBUG,"Place: ".print_r($place,true));
+		//		syslog(LOG_DEBUG,"Place: ".print_r($place,true));
 		mysql_set_charset("utf8");
 		$sql =
 			"
@@ -370,11 +371,54 @@ VALUES(
 		0);";
 
 		$response = mysql_query($sql);
-//		syslog(LOG_DEBUG, "DB_Function : addPlace" . print_r($response, true));
+		//		syslog(LOG_DEBUG, "DB_Function : addPlace" . print_r($response, true));
 
 		// check for successful store
 		if ($response) {
 			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function book_ticket($place_id, $user_id)
+	{
+		if (isset($place_id) && ! empty($place_id) && isset($user_id) && ! empty($user_id)) {
+
+
+			//		syslog(LOG_DEBUG, "book ticket function: " . $place_id . " user_id " . $user_id);
+			$unique_code = uniqid('', true);
+			//		syslog(LOG_DEBUG, "book ticket function: unique_code " . $unique_code );
+			$datetime = new DateTime('tomorrow');
+			$expiration_date = $datetime->format('Y-m-d H:i:s');
+			//		syslog(LOG_DEBUG, "book ticket function: expiration_date " . $expiration_date );
+
+
+			$sql_select = "SELECT max(number) as number FROM protereotitapp.ticket WHERE place_id = '$place_id' ;";
+			//		syslog(LOG_DEBUG, "book ticket function: Select sql " . $sql_select);
+			$res = mysql_query($sql_select);
+			$resdata = mysql_fetch_array($res);
+
+			//		syslog(LOG_DEBUG, "book ticket function: last number :" . print_r($resdata,true));
+			$last_number = intval($resdata['number']);
+			$last_number++;
+			//		syslog(LOG_DEBUG, "book ticket function: Int value last number augmented :" . $last_number);
+
+
+			$sql_insert = "INSERT INTO protereotitapp.ticket(user_id, expiration_date,place_id, unique_code, number, created_at) VALUES('$user_id', '$expiration_date', '$place_id', '$unique_code', '$last_number', NOW()) ;";
+			//		syslog(LOG_DEBUG, "book ticket function: insert" . $sql_insert);
+			$result = mysql_query($sql_insert);
+			// check for successful store
+
+			//		exit;
+			if ($result) {
+				// get user details
+				return $last_number;
+			} else {
+				return false;
+			}
+
+
 		} else {
 			return false;
 		}
