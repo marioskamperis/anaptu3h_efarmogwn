@@ -9,10 +9,10 @@ $response = array("error" => false);
 
 try {
 
-	if (isset($_POST['place_id']) && isset($_POST['name'])) {
+	if (isset($_POST['google_place_id']) && isset($_POST['name'])) {
 
 		// receiving the post params
-		$place['place_id'] = (isset($_POST['place_id']) && ! empty($_POST['place_id'])) ? $_POST['place_id'] : null;
+		$place['google_place_id'] = (isset($_POST['google_place_id']) && ! empty($_POST['google_place_id'])) ? $_POST['google_place_id'] : null;
 		$place['name'] = (isset($_POST['name']) && ! empty($_POST['name'])) ? $_POST['name'] : null;
 		$place['address'] = (isset($_POST['address']) && ! empty($_POST['address'])) ? $_POST['address'] : null;
 		$place['lat'] = (isset($_POST['lat']) && ! empty($_POST['lat'])) ? $_POST['lat'] : null;
@@ -24,7 +24,7 @@ try {
 		//TODO REQUEST USER ID
 
 
-		$exists = $db->checkPlace($place['place_id']);
+		$exists = $db->checkPlace($place['google_place_id']);
 
 //		syslog(LOG_DEBUG,"Book Ticket : Exists ".print_r($exists,true));
 
@@ -47,7 +47,7 @@ try {
 	} else {
 		// required post params is missing
 		$response["error"] = true;
-		$response["msg"] = "Required parameters place_id or name or user_id is missing!";
+		$response["msg"] = "Required parameters google_place_id or name or user_id is missing!";
 //		syslog(LOG_DEBUG,"Book Ticket : Post error ".print_r($response,true));
 		echo json_encode($response);
 	}

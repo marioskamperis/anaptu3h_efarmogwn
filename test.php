@@ -9,7 +9,7 @@
 		$.ajax({
 			url: 'book_ticket.php',
 			data: {
-				place_id: 'RYTDFYHG&*I%$^*(YH',
+				google_place_id: 'RYTDFYHG&*I%$^*(YH',
 				name: 'marios',
 				address: 'solomou 31',
 				lat: '27,3',
