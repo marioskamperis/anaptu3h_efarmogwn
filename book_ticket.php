@@ -2,26 +2,64 @@
 
 require_once 'DB_Functions.php';
 $db = new DB_Functions();
-
-$place_id=1;
-$user_id=63;
-$ticket = $db->book_ticket($place_id, $user_id);
-if ($ticket == false) {
-	$response["error"] = false;
-	$response["msg"] = "Problem obtaining next ticket.";
-
-}
-$ticket['error']=false;
-var_dump($ticket);
-echo print_r($ticket,true);
-echo print_r(json_encode($ticket),true);
-exit;
+//$place_id = $db->get_google_place_id('ChIJiUScwcu_oRQRR9t0zspX81E'); 
+//echo $place_id;
+//exit;
+//
+//$place_id = 1;
+//$user_id = 67;
+//$ticket = $db->book_ticket($place_id, $user_id);
+//
+//
+//if($ticket['estimated_time']==-1){
+//	$response["error"] = true;
+//	$response["msg"] = "No more tickets. Please try again tomorrow !";
+//	echo json_encode($response);
+//	exit;
+//}
+//
+//if ($ticket == false) {
+//	$response["error"] = false;
+//	$response["msg"] = "Problem obtaining next ticket.";
+//	echo json_encode($response);
+//	exit;
+//}
+//
+//if (!isset($ticket['estimated_time']) || empty($ticket['estimated_time'])) {
+//	$response["error"] = true;
+//	$response["msg"] = "Problem calculating estimated time.";
+//	echo json_encode($response);
+//	exit;
+//}
+//if (!isset($ticket['number']) || empty($ticket['number'])) {
+//	$response["error"] = true;
+//	$response["msg"] = "Problem calculating number.";
+//	echo json_encode($response);
+//	exit;
+//}
+//if (!isset($ticket['unique_code']) || empty($ticket['unique_code'])) {
+//	$response["error"] = true;
+//	$response["msg"] = "Problem getting unique_code.";
+//	echo json_encode($response);
+//	exit;
+//}
+//if (!isset($ticket['expiration_date']) || empty($ticket['expiration_date'])) {
+//	$response["error"] = true;
+//	$response["msg"] = "Problem getting expiration_date";
+//	echo json_encode($response);
+//	exit;
+//}
+//
+//
+//echo json_encode($ticket);
+//exit;
 // json response array
 $response = array("error" => false);
 $TAG = "BookTicket";
 
-try {
+syslog(LOG_DEBUG,"Book Ticket : Post  ".print_r($_POST,true));
 
+try {
 	if (isset($_POST['google_place_id']) && isset($_POST['user_id'])) {
 
 		// receiving the post params
@@ -36,30 +74,61 @@ try {
 		//		$place['website'] = (isset($_POST['website']) && ! empty($_POST['website'])) ? $_POST['website'] : null;
 
 
-		//TODO check if user can book ticket for the same service
-
+		//Get place Id
+		$place_id = $db->get_google_place_id($google_place_id);
+		
+		if(!isset($place_id) || empty($place_id)){
+			$response["error"] = true;
+			$response["msg"] = "Could not locate google place id.";
+			echo json_encode($response);
+			exit;
+		}
+		
 		//TODO book next ticket
-		$ticket = $db->book_ticket($google_place_id, $user_id);
+		$ticket = $db->book_ticket($place_id, $user_id);
+
+		if($ticket['estimated_time']==-1){
+			$response["error"] = true;
+			$response["msg"] = "No more tickets. Please try again tomorrow !";
+			echo json_encode($response);
+			exit;
+		}
+
 		if ($ticket == false) {
 			$response["error"] = false;
 			$response["msg"] = "Problem obtaining next ticket.";
 			echo json_encode($response);
+			exit;
+		}
+		
+		
+
+		if (!isset($ticket['estimated_time']) || empty($ticket['estimated_time'])) {
+			$response["error"] = true;
+			$response["msg"] = "Problem calculating estimated time.";
+			echo json_encode($response);
+			exit;
+		}
+		if (!isset($ticket['number']) || empty($ticket['number'])) {
+			$response["error"] = true;
+			$response["msg"] = "Problem calculating number.";
+			echo json_encode($response);
+			exit;
+		}
+		if (!isset($ticket['unique_code']) || empty($ticket['unique_code'])) {
+			$response["error"] = true;
+			$response["msg"] = "Problem getting unique_code.";
+			echo json_encode($response);
+			exit;
+		}
+		if (!isset($ticket['expiration_date']) || empty($ticket['expiration_date'])) {
+			$response["error"] = true;
+			$response["msg"] = "Problem getting expiration_date";
+			echo json_encode($response);
+			exit;
 		}
 
-
-		//TODO calculate estimated time
-
-//		$time_calculation = $db->calculate_time($ticket_id);
-//		if ($ticket == false) {
-//			$response["error"] = false;
-//			$response["msg"] = "Problem calculating estimated time.";
-//			echo json_encode($response);
-//		}
-
-		//TODO return ticket number and estimated time
-
 		$ticket['error']=false;
-		$ticket['estimated_time']=$time_calculated;
 		echo json_encode($ticket);
 		exit;
 

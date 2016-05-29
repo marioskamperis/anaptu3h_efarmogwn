@@ -342,7 +342,7 @@ class DB_Functions
 
 		syslog(LOG_DEBUG, "checkPlace " . print_r($resdata['google_place_id'], true));
 		syslog(LOG_DEBUG, "checkPlace " . print_r($resdata['confirmed'], true));
-		
+
 		if ($resdata['confirmed'] == 1) {
 			return true;
 		} else {
@@ -381,6 +381,11 @@ VALUES(
 		}
 	}
 
+	/**
+	 * @param $place_id
+	 * @param $user_id
+	 * @return bool OR Ticket['estimated_time','number','unique_code','expiration_date'
+	 */
 	public function book_ticket($place_id, $user_id)
 	{
 		if (isset($place_id) && ! empty($place_id) && isset($user_id) && ! empty($user_id)) {
@@ -398,37 +403,55 @@ VALUES(
 			//		syslog(LOG_DEBUG, "book ticket function: Select sql " . $sql_select);
 			$max_number_res = mysql_query($max_number);
 			$max_number_resdata = mysql_fetch_array($max_number_res);
-
 			//		syslog(LOG_DEBUG, "book ticket function: last number :" . print_r($resdata,true));
 			$last_number = intval($max_number_resdata['number']);
-			$last_number++;
+
+			$number=$last_number+1;
 			//		syslog(LOG_DEBUG, "book ticket function: Int value last number augmented :" . $last_number);
 
 
-			$sql_insert = "INSERT INTO protereotitapp.ticket(user_id, expiration_date,place_id, unique_code, number, created_at) VALUES('$user_id', '$expiration_date', '$place_id', '$unique_code', '$last_number', NOW()) ;";
+			$average_time = "SELECT average_serve_time as average_time FROM protereotitapp.places WHERE id = '$place_id' ;";
+			$average_time_res = mysql_query($average_time);
+			$average_time_resdata = mysql_fetch_array($average_time_res);
+			$average_time = $average_time_resdata['average_time'];
+
+
+			$shift_start = date('d-m-Y');
+			$shift_start .= " 08:00";
+
+			$shift_end = date('d-m-Y');
+			$shift_end .= " 14:00";
+
+
+			$minutes_to_add = ($last_number) * $average_time;
+			//			echo $minutes_to_add;
+			//			exit;
+			$time = new DateTime($shift_start);
+			$time->add(new DateInterval('PT' . intval($minutes_to_add) . 'M'));
+
+			$estimated_time = $time->format('d-m-Y H:i');
+
+
+			if (strtotime($estimated_time) > strtotime($shift_end)) {
+				$ticket['estimated_time'] = -1;
+			} else {
+				$ticket['estimated_time'] = $estimated_time;
+			}
+
+			$ticket['average_time'] = $average_time;
+			$ticket['number'] = $number;
+			$ticket['unique_code'] = $unique_code;
+			$ticket['expiration_date'] = $expiration_date;
+			//		exit;
+
+			if ($ticket['estimated_time'] == -1) {
+				return $ticket;	
+			}
+			$sql_insert = "INSERT INTO protereotitapp.ticket(user_id, expiration_date,place_id, unique_code, number, created_at) VALUES('$user_id', '$expiration_date', '$place_id', '$unique_code', '$number', NOW()) ;";
 			//		syslog(LOG_DEBUG, "book ticket function: insert" . $sql_insert);
 			$result = mysql_query($sql_insert);
 			// check for successful store
 
-			
-			$average_time="SELECT average_serve_time as average_time FROM protereotitapp.places WHERE id = '$place_id' ;";
-			$average_time_res = mysql_query($average_time);
-			$average_time_resdata = mysql_fetch_array($average_time_res);
-			$average_time=$average_time_resdata['average_time'];
-
-
-
-			$start_time= date('d-m-Y-H-i');
-			echo $start_time."-08-00";
-			
-			
-			
-			
-			$ticket['average_time']=$average_time;
-			$ticket['number']=$last_number;
-			$ticket['unique_code']=$unique_code;
-			$ticket['expiration_date']=$expiration_date;
-			//		exit;
 			if ($result) {
 				// get user details
 				return $ticket;
@@ -441,9 +464,16 @@ VALUES(
 			return false;
 		}
 	}
-	public function get_place_id($place_unique_id){
-		
-		
+
+	public function get_google_place_id($google_place_id)
+	{
+
+		$place_id = "SELECT id FROM protereotitapp.places WHERE google_place_id =  '$google_place_id' ;";
+		$place_id_res = mysql_query($place_id);
+		$place_id_resdata = mysql_fetch_array($place_id_res);
+		$place_id = $place_id_resdata['id'];
+
+		return $place_id;
 	}
 }
 
