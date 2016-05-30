@@ -36,8 +36,11 @@ class DB_Functions
 		$encrypted_password = $hash["encrypted"]; // encrypted password
 
 		$salt = $hash["salt"]; // salt
-		$result = mysql_query("INSERT INTO users(unique_id, name, email, encrypted_password, salt, created_at) VALUES('$uuid', '$name', '$email', '$encrypted_password', '$salt', NOW())");
+		$sql = "INSERT INTO protereotitapp.users(unique_id, name, email, encrypted_password, salt, created_at) VALUES('$uuid', '$name', '$email', '$encrypted_password', '$salt', NOW())";
+
+		$result = mysql_query($sql);
 		// check for successful store
+
 		if ($result) {
 			// get user details
 			$id = mysql_insert_id(); // last inserted id
@@ -406,14 +409,14 @@ VALUES(
 			//		syslog(LOG_DEBUG, "book ticket function: last number :" . print_r($resdata,true));
 			$last_number = intval($max_number_resdata['number']);
 
-			$number=$last_number+1;
+			$number = $last_number + 1;
 			//		syslog(LOG_DEBUG, "book ticket function: Int value last number augmented :" . $last_number);
 
 
-			$average_time = "SELECT average_serve_time as average_time FROM protereotitapp.places WHERE id = '$place_id' ;";
+			$average_time = "SELECT average_serve_time FROM protereotitapp.places WHERE id = '$place_id' ;";
 			$average_time_res = mysql_query($average_time);
 			$average_time_resdata = mysql_fetch_array($average_time_res);
-			$average_time = $average_time_resdata['average_time'];
+			$average_time = $average_time_resdata['average_serve_time'];
 
 
 			$shift_start = date('d-m-Y');
@@ -445,11 +448,20 @@ VALUES(
 			//		exit;
 
 			if ($ticket['estimated_time'] == -1) {
-				return $ticket;	
+				return $ticket;
 			}
 			$sql_insert = "INSERT INTO protereotitapp.ticket(user_id, expiration_date,place_id, unique_code, number, created_at) VALUES('$user_id', '$expiration_date', '$place_id', '$unique_code', '$number', NOW()) ;";
 			//		syslog(LOG_DEBUG, "book ticket function: insert" . $sql_insert);
 			$result = mysql_query($sql_insert);
+			
+			if ($ticket['estimated_time'] != -1) {
+				$ticket_id = mysql_insert_id();
+				$insert_estimated_time = "UPDATE protereotitapp.ticket SET estimated_time='$estimated_time' WHERE id = '$ticket_id';";
+				//		syslog(LOG_DEBUG, "book ticket function: insert" . $sql_insert);
+				$ok = mysql_query($insert_estimated_time);
+
+			}
+
 			// check for successful store
 
 			if ($result) {
