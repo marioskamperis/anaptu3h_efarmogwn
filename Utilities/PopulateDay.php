@@ -29,7 +29,7 @@ for ($user_id = 1; $user_id <= 502; $user_id++) {
 		echo "</pre>";
 
 		$users_booked[] = $random_user;
-		sleep(rand(1, 120));
+		//		sleep(rand(1, 120));
 		$ok = $db->book_ticket($places[rand(0, 2)], $random_user);
 
 	}

@@ -453,7 +453,7 @@ VALUES(
 			$sql_insert = "INSERT INTO protereotitapp.ticket(user_id, expiration_date,place_id, unique_code, number, created_at) VALUES('$user_id', '$expiration_date', '$place_id', '$unique_code', '$number', NOW()) ;";
 			//		syslog(LOG_DEBUG, "book ticket function: insert" . $sql_insert);
 			$result = mysql_query($sql_insert);
-			
+
 			if ($ticket['estimated_time'] != -1) {
 				$ticket_id = mysql_insert_id();
 				$insert_estimated_time = "UPDATE protereotitapp.ticket SET estimated_time='$estimated_time' WHERE id = '$ticket_id';";
@@ -486,6 +486,39 @@ VALUES(
 		$place_id = $place_id_resdata['id'];
 
 		return $place_id;
+	}
+
+	public function serve_ticket($ticket_id, $time_served)
+	{
+		
+		$sql = "UPDATE protereotitapp.ticket SET time_served = '$time_served' WHERE id = '$ticket_id'";
+		$result = mysql_query($sql);
+		return $result;
+	}
+	
+
+	public function get_ticket($ticket_id)
+	{
+
+		$ticket = "SELECT * FROM protereotitapp.ticket WHERE id=  '$ticket_id' ;";
+		$ticket_res = mysql_query($ticket);
+		$ticket_redata = mysql_fetch_array($ticket_res);
+
+		return $ticket_redata;
+	}
+	public function get_tickets($place_id)
+	{
+
+		$tickets = "SELECT * FROM protereotitapp.ticket WHERE place_id = '$place_id' ;";
+		
+		$tickets_res = mysql_query($tickets);
+
+		$tickets_array=array();
+		while($row = mysql_fetch_assoc($tickets_res)){
+			$tickets_array[]=$row;
+		}
+
+		return $tickets_array;
 	}
 }
 
