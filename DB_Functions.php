@@ -477,6 +477,10 @@ VALUES(
 		}
 	}
 
+	/**
+	 * @param $google_place_id
+	 * @return string
+	 */
 	public function get_google_place_id($google_place_id)
 	{
 
@@ -488,15 +492,62 @@ VALUES(
 		return $place_id;
 	}
 
+	/**
+	 * @param $ticket_id
+	 * @param $time_served
+	 * @return resource
+	 */
 	public function serve_ticket($ticket_id, $time_served)
 	{
+		$sql="";
+		if (isset($time_served) && ! empty($time_served)) {
+			$sql = "UPDATE protereotitapp.ticket SET time_served = '$time_served' WHERE id = '$ticket_id'";
+		}else{
+			$sql = "UPDATE protereotitapp.ticket SET time_served = NOW() WHERE id = '$ticket_id'";
+		}
 		
-		$sql = "UPDATE protereotitapp.ticket SET time_served = '$time_served' WHERE id = '$ticket_id'";
 		$result = mysql_query($sql);
 		return $result;
 	}
-	
 
+
+	/**
+	 * @param $place_id
+	 * @return array
+	 */
+	public function get_place($place_id)
+	{
+
+		$place_id = "SELECT * FROM protereotitapp.places WHERE id=  '$place_id' ;";
+		$ticket_res = mysql_query($place_id);
+		$ticket_redata = mysql_fetch_array($ticket_res);
+
+		return $ticket_redata;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_places()
+	{
+
+		$tickets = "SELECT * FROM protereotitapp.places ;";
+
+		$tickets_res = mysql_query($tickets);
+
+		$tickets_array = array();
+		while ($row = mysql_fetch_assoc($tickets_res)) {
+			$tickets_array[] = $row;
+		}
+
+		return $tickets_array;
+	}
+
+
+	/**
+	 * @param $ticket_id
+	 * @return array
+	 */
 	public function get_ticket($ticket_id)
 	{
 
@@ -506,20 +557,51 @@ VALUES(
 
 		return $ticket_redata;
 	}
+
+	/**
+	 * @param $place_id
+	 * @return array
+	 */
 	public function get_tickets($place_id)
 	{
 
-		$tickets = "SELECT * FROM protereotitapp.ticket WHERE place_id = '$place_id' ;";
-		
+		if ( ! isset($place_id) || empty($place_id)) {
+			$tickets = "SELECT * FROM protereotitapp.ticket ;";
+		} else {
+			$tickets = "SELECT * FROM protereotitapp.ticket WHERE place_id = '$place_id' ;";
+		}
+
 		$tickets_res = mysql_query($tickets);
 
-		$tickets_array=array();
-		while($row = mysql_fetch_assoc($tickets_res)){
-			$tickets_array[]=$row;
+		$tickets_array = array();
+		while ($row = mysql_fetch_assoc($tickets_res)) {
+			$tickets_array[] = $row;
 		}
 
 		return $tickets_array;
 	}
+
+
+	public function getDataForTicketTable($place_id)
+	{
+		mysql_set_charset("utf8");
+		$sql = "SELECT 	user.id, user.name ,  place.name , ticket.id ,ticket.place_id ,ticket.user_id , ticket.expiration_date ,ticket.number,ticket.created_at,ticket.estimated_time, ticket.time_served
+			FROM protereotitapp.ticket as ticket
+			INNER JOIN protereotitapp.users as user ON user.id=ticket.user_id
+			INNER JOIN protereotitapp.places as place ON place.id=ticket.place_id
+			WHERE place.id = '$place_id';";
+
+		$tickets_res = mysql_query($sql);
+
+		$tickets_array = array();
+		while ($row = mysql_fetch_assoc($tickets_res)) {
+			$tickets_array[] = $row;
+		}
+
+		return $tickets_array;
+	}
+
+
 }
 
 ?>

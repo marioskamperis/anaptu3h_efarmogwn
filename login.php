@@ -40,7 +40,7 @@
     $(function(){
         $("#register").click(function(){
             event.preventDefault();
-            window.location.replace("/game/register.php");
+            window.location.replace("/register.php");
         });
     });
 </script>
