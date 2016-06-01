@@ -21,12 +21,10 @@
 				<h2>Register</h2>
 				<input name='email' placeholder='E-Mail Address' type='text'>
 				<input id='pw1' name='password' placeholder='Password' type='password'>
-
 				<input name='name' placeholder='Name' type='text'>
 				<input class='animated' type='submit' value='Register''>
 			</div>
 
-			<button id="register">Register</button>
 		</form>
 	</div>
 

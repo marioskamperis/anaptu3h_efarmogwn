@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Texnologia Polumeswn</title>
+    <title>ProtereotitApp</title>
     <link rel="stylesheet" href="css/login.css">
 </head>
 
@@ -17,7 +17,6 @@
             <button type="submit" name='Submit' id="submit" value='Submit'>Login</button>
         </form>
         <form name="form" actions="/register.php" method="POST" accept-charset="utf-8">
-
             <button  id="register">Register</button>
         </form>
     </div>
@@ -40,7 +39,7 @@
     $(function(){
         $("#register").click(function(){
             event.preventDefault();
-            window.location.replace("/register.php");
+            window.location.replace("/protereotitapp/register.php");
         });
     });
 </script>

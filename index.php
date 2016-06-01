@@ -18,6 +18,20 @@ if ( ! empty($user)) {
 } else {
 	echo("Login information unsuccefull ");
 }
+
+
+$results = $db->get_tickets($user['admin_place_id']);
+
+$number_of_tickets = sizeof($results);
+$number_of_tickets_served=0;
+foreach($results as $result){
+	if( !empty($result['time_served'])){
+		$number_of_tickets_served++;
+	}
+}
+$place = $db->get_place($user['admin_place_id']);
+$place_average_time=$place['average_serve_time'];
+
 ?>
 
 <!DOCTYPE html>
@@ -354,153 +368,12 @@ if ( ! empty($user)) {
 						<li><a href="Utilities/CreateDummyUsers.php"><i class="fa fa-circle-o"></i> Δημιουργία Χρηστών</a></li>
 						<li><a href="Utilities/PopulateDay.php"><i class="fa fa-circle-o"></i> Δημιουργία Εισιτηρίων</a></li>
 						<li><a href="Utilities/ServeTicketsEmulator.php"><i class="fa fa-circle-o"></i> Δημιουργία Κίνησης Ημέρας</a></li>
+						<li><a href="Utilities/drop_users.php"><i class="fa fa-circle-o"></i> Διαγραφή Χρηστών</a></li>
+						<li><a href="Utilities/drop_tickets.php"><i class="fa fa-circle-o"></i> Διαγραφή Εισιτηρίων</a></li>
 
 					</ul>
 				</li>
 
-				<!--				<li class="active treeview">-->
-				<!--					<a href="#">-->
-				<!--						<i class="fa fa-dashboard"></i> <span>Dashboard</span> <i class="fa fa-angle-left pull-right"></i>-->
-				<!--					</a>-->
-				<!--					<ul class="treeview-menu">-->
-				<!--						<li class="active"><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>-->
-				<!--						<li><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>-->
-				<!--					</ul>-->
-				<!--				</li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-table"></i> <span>Τρέχοντα Εισιτήρια</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/tables/data.php"><i class="fa fa-circle-o"></i> Data tables</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            -->
-				<!--            -->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-files-o"></i>-->
-				<!--                <span>Layout Options</span>-->
-				<!--                <span class="label label-primary pull-right">4</span>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>-->
-				<!--                <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>-->
-				<!--                <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>-->
-				<!--                <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li>-->
-				<!--              <a href="pages/widgets.html">-->
-				<!--                <i class="fa fa-th"></i> <span>Widgets</span> <small class="label pull-right bg-green">new</small>-->
-				<!--              </a>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-pie-chart"></i>-->
-				<!--                <span>Charts</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>-->
-				<!--                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>-->
-				<!--                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>-->
-				<!--                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-laptop"></i>-->
-				<!--                <span>UI Elements</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i> General</a></li>-->
-				<!--                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> Icons</a></li>-->
-				<!--                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> Buttons</a></li>-->
-				<!--                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Sliders</a></li>-->
-				<!--                <li><a href="pages/UI/timeline.html"><i class="fa fa-circle-o"></i> Timeline</a></li>-->
-				<!--                <li><a href="pages/UI/modals.html"><i class="fa fa-circle-o"></i> Modals</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-edit"></i> <span>Forms</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/forms/general.html"><i class="fa fa-circle-o"></i> General Elements</a></li>-->
-				<!--                <li><a href="pages/forms/advanced.html"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>-->
-				<!--                <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-table"></i> <span>Tables</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>-->
-				<!--                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li>-->
-				<!--              <a href="pages/calendar.html">-->
-				<!--                <i class="fa fa-calendar"></i> <span>Calendar</span>-->
-				<!--                <small class="label pull-right bg-red">3</small>-->
-				<!--              </a>-->
-				<!--            </li>-->
-				<!--            <li>-->
-				<!--              <a href="pages/mailbox/mailbox.html">-->
-				<!--                <i class="fa fa-envelope"></i> <span>Mailbox</span>-->
-				<!--                <small class="label pull-right bg-yellow">12</small>-->
-				<!--              </a>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-folder"></i> <span>Examples</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>-->
-				<!--                <li><a href="pages/examples/profile.html"><i class="fa fa-circle-o"></i> Profile</a></li>-->
-				<!--                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>-->
-				<!--                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>-->
-				<!--                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>-->
-				<!--                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>-->
-				<!--                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>-->
-				<!--                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li class="treeview">-->
-				<!--              <a href="#">-->
-				<!--                <i class="fa fa-share"></i> <span>Multilevel</span>-->
-				<!--                <i class="fa fa-angle-left pull-right"></i>-->
-				<!--              </a>-->
-				<!--              <ul class="treeview-menu">-->
-				<!--                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>-->
-				<!--                <li>-->
-				<!--                  <a href="#"><i class="fa fa-circle-o"></i> Level One <i class="fa fa-angle-left pull-right"></i></a>-->
-				<!--                  <ul class="treeview-menu">-->
-				<!--                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>-->
-				<!--                    <li>-->
-				<!--                      <a href="#"><i class="fa fa-circle-o"></i> Level Two <i class="fa fa-angle-left pull-right"></i></a>-->
-				<!--                      <ul class="treeview-menu">-->
-				<!--                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>-->
-				<!--                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>-->
-				<!--                      </ul>-->
-				<!--                    </li>-->
-				<!--                  </ul>-->
-				<!--                </li>-->
-				<!--                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>-->
-				<!--              </ul>-->
-				<!--            </li>-->
-				<!--            <li><a href="documentation/index.html"><i class="fa fa-book"></i> <span>Documentation</span></a></li>-->
-				<!--            <li class="header">LABELS</li>-->
-				<!--            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>-->
-				<!--            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>-->
-				<!--            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>-->
 			</ul>
 		</section>
 		<!-- /.sidebar -->
@@ -511,12 +384,12 @@ if ( ! empty($user)) {
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1>
-				Dashboard
-				<small>Control panel</small>
+				Κετρικό Ταμπλό
+				
 			</h1>
 			<ol class="breadcrumb">
-				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-				<li class="active">Dashboard</li>
+				<li><a href="#"><i class="fa fa-dashboard"></i> Αρχική</a></li>
+				<li class="active">Κετρικό Ταμπλό</li>
 			</ol>
 		</section>
 
@@ -528,8 +401,8 @@ if ( ! empty($user)) {
 					<!-- small box -->
 					<div class="small-box bg-aqua">
 						<div class="inner">
-							<h3>150</h3>
-							<p>New Orders</p>
+							<h3><?php echo $number_of_tickets;?></h3>
+							<p>Τρέχοντα Εισιτήρια </p>
 						</div>
 						<div class="icon">
 							<i class="ion ion-bag"></i>
@@ -541,8 +414,8 @@ if ( ! empty($user)) {
 					<!-- small box -->
 					<div class="small-box bg-green">
 						<div class="inner">
-							<h3>53<sup style="font-size: 20px">%</sup></h3>
-							<p>Bounce Rate</p>
+							<h3><?php echo $number_of_tickets_served;?><sup style="font-size: 20px"></sup></h3>
+							<p>Εξυπηρετημένα Εισιτήρια</p>
 						</div>
 						<div class="icon">
 							<i class="ion ion-stats-bars"></i>
@@ -554,8 +427,8 @@ if ( ! empty($user)) {
 					<!-- small box -->
 					<div class="small-box bg-yellow">
 						<div class="inner">
-							<h3>44</h3>
-							<p>User Registrations</p>
+							<h3><?php echo $place_average_time;?></h3> 
+							<p>Μέσος Όρος Εξυπηρέτησης (λεπτα)</p>
 						</div>
 						<div class="icon">
 							<i class="ion ion-person-add"></i>
@@ -563,19 +436,19 @@ if ( ! empty($user)) {
 						<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 					</div>
 				</div><!-- ./col -->
-				<div class="col-lg-3 col-xs-6">
-					<!-- small box -->
-					<div class="small-box bg-red">
-						<div class="inner">
-							<h3>65</h3>
-							<p>Unique Visitors</p>
-						</div>
-						<div class="icon">
-							<i class="ion ion-pie-graph"></i>
-						</div>
-						<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-					</div>
-				</div><!-- ./col -->
+<!--				<div class="col-lg-3 col-xs-6">-->
+<!--					<!-- small box -->-->
+<!--					<div class="small-box bg-red">-->
+<!--						<div class="inner">-->
+<!--							<h3>65</h3>-->
+<!--							<p>Unique Visitors</p>-->
+<!--						</div>-->
+<!--						<div class="icon">-->
+<!--							<i class="ion ion-pie-graph"></i>-->
+<!--						</div>-->
+<!--						<a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>-->
+<!--					</div>-->
+<!--				</div><!-- ./col -->-->
 			</div><!-- /.row -->
 			<!-- Main row -->
 			<div class="row">
@@ -585,202 +458,21 @@ if ( ! empty($user)) {
 					<div class="nav-tabs-custom">
 						<!-- Tabs within a box -->
 						<ul class="nav nav-tabs pull-right">
-							<li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-							<li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
-							<li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
+							<li class="active"><a href="#revenue-chart" data-toggle="tab">Εισιτήρια</a></li>
+							<li class="pull-left header"><i class="fa fa-inbox"></i> Εισιτήρια</li>
 						</ul>
 						<div class="tab-content no-padding">
 							<!-- Morris chart - Sales -->
 							<div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
-							<div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
+							
 						</div>
 					</div><!-- /.nav-tabs-custom -->
-
-					<!-- Chat box -->
-					<div class="box box-success">
-						<div class="box-header">
-							<i class="fa fa-comments-o"></i>
-							<h3 class="box-title">Chat</h3>
-							<div class="box-tools pull-right" data-toggle="tooltip" title="Status">
-								<div class="btn-group" data-toggle="btn-toggle">
-									<button type="button" class="btn btn-default btn-sm active"><i class="fa fa-square text-green"></i>
-									</button>
-									<button type="button" class="btn btn-default btn-sm"><i class="fa fa-square text-red"></i></button>
-								</div>
-							</div>
-						</div>
-						<div class="box-body chat" id="chat-box">
-							<!-- chat item -->
-							<div class="item">
-								<img src="dist/img/user4-128x128.jpg" alt="user image" class="online">
-								<p class="message">
-									<a href="#" class="name">
-										<small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>
-										Mike Doe
-									</a>
-									I would like to meet you to discuss the latest news about
-									the arrival of the new theme. They say it is going to be one the
-									best themes on the market
-								</p>
-								<div class="attachment">
-									<h4>Attachments:</h4>
-									<p class="filename">
-										Theme-thumbnail-image.jpg
-									</p>
-									<div class="pull-right">
-										<button class="btn btn-primary btn-sm btn-flat">Open</button>
-									</div>
-								</div><!-- /.attachment -->
-							</div><!-- /.item -->
-							<!-- chat item -->
-							<div class="item">
-								<img src="dist/img/user3-128x128.jpg" alt="user image" class="offline">
-								<p class="message">
-									<a href="#" class="name">
-										<small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
-										Alexander Pierce
-									</a>
-									I would like to meet you to discuss the latest news about
-									the arrival of the new theme. They say it is going to be one the
-									best themes on the market
-								</p>
-							</div><!-- /.item -->
-							<!-- chat item -->
-							<div class="item">
-								<img src="dist/img/user2-160x160.jpg" alt="user image" class="offline">
-								<p class="message">
-									<a href="#" class="name">
-										<small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small>
-										Susan Doe
-									</a>
-									I would like to meet you to discuss the latest news about
-									the arrival of the new theme. They say it is going to be one the
-									best themes on the market
-								</p>
-							</div><!-- /.item -->
-						</div><!-- /.chat -->
-						<div class="box-footer">
-							<div class="input-group">
-								<input class="form-control" placeholder="Type message...">
-								<div class="input-group-btn">
-									<button class="btn btn-success"><i class="fa fa-plus"></i></button>
-								</div>
-							</div>
-						</div>
-					</div><!-- /.box (chat box) -->
-
-					<!-- TO DO List -->
-					<div class="box box-primary">
-						<div class="box-header">
-							<i class="ion ion-clipboard"></i>
-							<h3 class="box-title">To Do List</h3>
-							<div class="box-tools pull-right">
-								<ul class="pagination pagination-sm inline">
-									<li><a href="#">&laquo;</a></li>
-									<li><a href="#">1</a></li>
-									<li><a href="#">2</a></li>
-									<li><a href="#">3</a></li>
-									<li><a href="#">&raquo;</a></li>
-								</ul>
-							</div>
-						</div><!-- /.box-header -->
-						<div class="box-body">
-							<ul class="todo-list">
-								<li>
-									<!-- drag handle -->
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<!-- checkbox -->
-									<input type="checkbox" value="" name="">
-									<!-- todo text -->
-									<span class="text">Design a nice theme</span>
-									<!-- Emphasis label -->
-									<small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-									<!-- General tools such as edit or delete-->
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-								<li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<input type="checkbox" value="" name="">
-									<span class="text">Make the theme responsive</span>
-									<small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-								<li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<input type="checkbox" value="" name="">
-									<span class="text">Let theme shine like a star</span>
-									<small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-								<li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<input type="checkbox" value="" name="">
-									<span class="text">Let theme shine like a star</span>
-									<small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-								<li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<input type="checkbox" value="" name="">
-									<span class="text">Check your messages and notifications</span>
-									<small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-								<li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-									<input type="checkbox" value="" name="">
-									<span class="text">Let theme shine like a star</span>
-									<small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
-									<div class="tools">
-										<i class="fa fa-edit"></i>
-										<i class="fa fa-trash-o"></i>
-									</div>
-								</li>
-							</ul>
-						</div><!-- /.box-body -->
-						<div class="box-footer clearfix no-border">
-							<button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
-						</div>
-					</div><!-- /.box -->
 
 					<!-- quick email widget -->
 					<div class="box box-info">
 						<div class="box-header">
 							<i class="fa fa-envelope"></i>
-							<h3 class="box-title">Quick Email</h3>
+							<h3 class="box-title">Στείλτε Email σε Χρήστη.</h3>
 							<!-- tools box -->
 							<div class="pull-right box-tools">
 								<button class="btn btn-info btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove"><i
@@ -810,77 +502,6 @@ if ( ! empty($user)) {
 				<!-- right col (We are only adding the ID to make the widgets sortable)-->
 				<section class="col-lg-5 connectedSortable">
 
-					<!-- Map box -->
-					<div class="box box-solid bg-light-blue-gradient">
-						<div class="box-header">
-							<!-- tools box -->
-							<div class="pull-right box-tools">
-								<button class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range"><i
-										class="fa fa-calendar"></i></button>
-								<button class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip"
-										title="Collapse" style="margin-right: 5px;"><i class="fa fa-minus"></i></button>
-							</div><!-- /. tools -->
-
-							<i class="fa fa-map-marker"></i>
-							<h3 class="box-title">
-								Visitors
-							</h3>
-						</div>
-						<div class="box-body">
-							<div id="world-map" style="height: 250px; width: 100%;"></div>
-						</div><!-- /.box-body-->
-						<div class="box-footer no-border">
-							<div class="row">
-								<div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-									<div id="sparkline-1"></div>
-									<div class="knob-label">Visitors</div>
-								</div><!-- ./col -->
-								<div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-									<div id="sparkline-2"></div>
-									<div class="knob-label">Online</div>
-								</div><!-- ./col -->
-								<div class="col-xs-4 text-center">
-									<div id="sparkline-3"></div>
-									<div class="knob-label">Exists</div>
-								</div><!-- ./col -->
-							</div><!-- /.row -->
-						</div>
-					</div>
-					<!-- /.box -->
-
-					<!-- solid sales graph -->
-					<div class="box box-solid bg-teal-gradient">
-						<div class="box-header">
-							<i class="fa fa-th"></i>
-							<h3 class="box-title">Sales Graph</h3>
-							<div class="box-tools pull-right">
-								<button class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-								<button class="btn bg-teal btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
-							</div>
-						</div>
-						<div class="box-body border-radius-none">
-							<div class="chart" id="line-chart" style="height: 250px;"></div>
-						</div><!-- /.box-body -->
-						<div class="box-footer no-border">
-							<div class="row">
-								<div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-									<input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
-										   data-fgColor="#39CCCC">
-									<div class="knob-label">Mail-Orders</div>
-								</div><!-- ./col -->
-								<div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-									<input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
-										   data-fgColor="#39CCCC">
-									<div class="knob-label">Online</div>
-								</div><!-- ./col -->
-								<div class="col-xs-4 text-center">
-									<input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-										   data-fgColor="#39CCCC">
-									<div class="knob-label">In-Store</div>
-								</div><!-- ./col -->
-							</div><!-- /.row -->
-						</div><!-- /.box-footer -->
-					</div><!-- /.box -->
 
 					<!-- Calendar -->
 					<div class="box box-solid bg-green-gradient">
@@ -949,16 +570,20 @@ if ( ! empty($user)) {
 						</div>
 					</div><!-- /.box -->
 
+					
+
+					
+
 				</section><!-- right col -->
 			</div><!-- /.row (main row) -->
 
 		</section><!-- /.content -->
 	</div><!-- /.content-wrapper -->
 	<footer class="main-footer">
-		<div class="pull-right hidden-xs">
-			<b>Version</b> 2.3.0
-		</div>
-		<strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.
+<!--		<div class="pull-right hidden-xs">-->
+<!--			<b>Version</b> 2.3.0-->
+<!--		</div>-->
+<!--		<strong>Copyright &copy; 2014-2015 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.-->
 	</footer>
 
 	<!-- Control Sidebar -->
@@ -1166,4 +791,59 @@ if ( ! empty($user)) {
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
 </body>
+<script>
+	$(function () {
+		"use strict";
+
+
+		// AREA CHART
+		var area = new Morris.Area({
+			element: 'revenue-chart',
+			resize: true,
+			data: [
+				{y: '2011 Q567', item1: 2500, item2: 2666},
+				{y: '2011 Q2', item1: 2778, item2: 2294},
+				{y: '2011 Q3', item1: 4912, item2: 1969},
+				{y: '2011 Q4', item1: 3767, item2: 3597},
+				{y: '2012 Q1', item1: 6810, item2: 1914},
+				{y: '2012 Q2', item1: 5670, item2: 4293},
+				{y: '2012 Q3', item1: 4820, item2: 3795},
+				{y: '2012 Q4', item1: 15073, item2: 5967},
+				{y: '2013 Q1', item1: 10687, item2: 4460},
+				{y: '2013 Q2', item1: 8432, item2: 5713}
+			],
+			xkey: 'y',
+			ykeys: ['item1', 'item2'],
+			labels: ['Item 1', 'Item 2'],
+			lineColors: ['#a0d0e0', '#3c8dbc'],
+			hideHover: 'auto'
+		});
+
+		// LINE CHART
+		var line = new Morris.Line({
+			element: 'line-chart',
+			resize: true,
+			data: [
+				{y: '01/05', item1: 60},
+				{y: '03/05', item1: 58},
+				{y: '06/05', item1: 55},
+				{y: '09/05', item1: 45},
+				{y: '12/05', item1: 68},
+				{y: '15/05', item1: 52},
+				{y: '18/05', item1: 49},
+				{y: '21/05', item1: 53},
+				{y: '24/05', item1: 70},
+				{y: '27/05', item1: 64},
+				{y: '31/05', item1: 60}
+			],
+			xkey: 'y',
+			ykeys: ['item1'],
+			labels: ['Item 1'],
+			lineColors: ['#3c8dbc'],
+			hideHover: 'auto'
+		});
+
+
+	});
+</script>
 </html>

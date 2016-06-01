@@ -596,12 +596,38 @@ VALUES(
 		$tickets_array = array();
 		while ($row = mysql_fetch_assoc($tickets_res)) {
 			$tickets_array[] = $row;
+			
 		}
 
 		return $tickets_array;
 	}
+	
+//	public function drop_users(){
+//		
+//		$sql = "truncate protereotitapp.users;";
+//		
+//		$tickets_res = mysql_query($sql);
+//	}
+//
+	public function drop_tickets(){
+		$sql = "truncate table protereotitapp.ticket;";
+		echo $sql;
 
+		$tickets_res = mysql_query($sql);
+	}
 
+	public function setAverageTime($average_time,$place_id){
+		$sql="";
+		if (! empty($place_id) && ! empty($average_time)) {
+			$sql = "UPDATE protereotitapp.places SET average_serve_time= '$average_time' WHERE id = '$place_id'";
+			$result = mysql_query($sql);
+			return $result;
+		}else{
+			return false;
+		}
+
+	
+	}
 }
 
 ?>

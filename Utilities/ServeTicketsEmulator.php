@@ -13,15 +13,20 @@ include('../DB_Functions.php');
 
 $db = new DB_Functions();
 
-$counter = 1;
+$place_id=1;
 
-$tickets = $db->get_tickets(1);
-//var_dump($tickets);
+
+$tickets = $db->get_tickets($place_id);
+
+$counter = 1;
 $previous_serve_time;
+$new_average_time=0;
 
 foreach ($tickets as $ticket) {
-	echo $ticket['id'];
+//	echo $ticket['id'];
+
 	if ($ticket['number'] == 1) {
+
 		$minutes_to_add = mt_rand(2, 8);
 		echo "Minutes to Add: " . $minutes_to_add . "</br>";
 
@@ -52,10 +57,19 @@ foreach ($tickets as $ticket) {
 		echo empty($resposns) ? "ERROR" : "";
 
 		$previous_serve_time = $served_time;
-		
+
 	}
+	$new_average_time=$new_average_time+$minutes_to_add;
 	$counter++;
 }
+
+$new_average_time= $new_average_time/$counter;
+$new_average_time= round($new_average_time,2);
+echo " \n NEW AVERAGE TIME : ".$new_average_time." \n";
+$ok = $db->setAverageTime($new_average_time,$place_id);
+echo $ok;
+
+
 
 
 function RandomWeightedNumber()
@@ -64,9 +78,9 @@ function RandomWeightedNumber()
 	$weight = mt_rand(0, 10);
 	if ($weight == 1) {
 		return mt_rand(11, 15);
-	} elseif ($weight == 2 || $weight == 3) {
+	} elseif ($weight == 2 || $weight == 3 || $weight == 4) {
 		return mt_rand(8, 10);
-	} elseif ($weight == 4 || $weight == 5 || $weight == 6) {
+	} elseif ( $weight == 5 || $weight == 6) {
 		return mt_rand(1, 3);
 	} else {
 		return mt_rand(4, 7);
