@@ -12,7 +12,7 @@ include('../DB_Functions.php');
 
 $db = new DB_Functions();
 
-echo "ok";
+//echo "ok";
 $places = array(1, 4, 8);
 $users_booked = array();
 

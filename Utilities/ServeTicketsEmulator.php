@@ -16,13 +16,16 @@ $db = new DB_Functions();
 $counter = 1;
 
 $tickets = $db->get_tickets(1);
-var_dump($tickets);
+//var_dump($tickets);
 $previous_serve_time;
+
 foreach ($tickets as $ticket) {
-	if ($ticket['id'] == 1) {
+	echo $ticket['id'];
+	if ($ticket['number'] == 1) {
 		$minutes_to_add = mt_rand(2, 8);
 		echo "Minutes to Add: " . $minutes_to_add . "</br>";
 
+		echo $ticket['estimated_time'];
 		$time = new DateTime($ticket['estimated_time']);
 		$time->add(new DateInterval('PT' . intval($minutes_to_add) . 'M'));
 		$served_time = $time->format('d-m-Y H:i');

@@ -20,6 +20,8 @@ if ( ! empty($user)) {
 }
 
 $results = $db->getDataForTicketTable($user['admin_place_id']);
+//var_dump($results);
+//exit;
 
 
 ?>
@@ -322,7 +324,10 @@ $results = $db->getDataForTicketTable($user['admin_place_id']);
 					<img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 				</div>
 				<div class="pull-left info">
-					<p><?php echo $user [name] . ":" . $user[email] ?></p>
+					<?php if ($user['admin_place_id'] != -1) {
+						$place = $db->get_place($user['admin_place_id']);
+					} ?>
+					<p><?php echo $user ['name'] . ":" . $place['name']; ?></p>
 					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 				</div>
 			</div>
@@ -343,6 +348,20 @@ $results = $db->getDataForTicketTable($user['admin_place_id']);
 
 				<li><a href="index.php"><i class="fa fa-book"></i> <span>Γενικό Ταμπλό</span></a></li>
 				<li><a href="data.php"><i class="fa fa-book"></i> <span>Τρέχοντα Εισιτήρια</span></a></li>
+
+				<li class="treeview">
+					<a href="#">
+						<i class="fa fa-laptop"></i>
+						<span>Προσομοίωση Κίνησης</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu">
+						<li><a href="Utilities/CreateDummyUsers.php"><i class="fa fa-circle-o"></i> Δημιουργία Χρηστών</a></li>
+						<li><a href="Utilities/PopulateDay.php"><i class="fa fa-circle-o"></i> Δημιουργία Εισιτηρίων</a></li>
+						<li><a href="Utilities/ServeTicketsEmulator.php"><i class="fa fa-circle-o"></i> Δημιουργία Κίνησης Ημέρας</a></li>
+
+					</ul>
+				</li>
 				<!--				<li class="active treeview">-->
 				<!--					<a href="#">-->
 				<!--						<i class="fa fa-dashboard"></i> <span>Dashboard</span> <i class="fa fa-angle-left pull-right"></i>-->
@@ -518,9 +537,9 @@ $results = $db->getDataForTicketTable($user['admin_place_id']);
 							<table id="example2" class="table table-bordered table-hover">
 								<thead>
 								<tr>
-									<th>Όνομα Χρήστση</th>
-									<th>Ημερομηνία Λήξης Εισιτηρίου</th>
 									<th>Αριθμός Εισιτηρίου</th>
+									<th>Όνομα Χρήστη</th>
+									<th>Ημερομηνία Λήξης Εισιτηρίου</th>
 									<th>Ημερομηνία Δημιουργίας Εισιτηρίου</th>
 									<th>Εκτιμώμενος Χρόνος Εξυπηρέτησης</th>
 									<th>Ώρα Εξυπηρέτησης</th>
@@ -531,9 +550,9 @@ $results = $db->getDataForTicketTable($user['admin_place_id']);
 								foreach ($results as $result) {
 									$button = '<button class="btn btn-success pull-right send_ticket" id =' . $result['id'] . '><i class="fa fa-credit-card"></i> Εξυπηρέτηση Εισιτηρίου</button>';
 									echo "<tr>";
-									echo "<td>" . $result['name'] . "</td>";
-									echo "<td>" . $result['expiration_date'] . "</td>";
 									echo "<td>" . $result['number'] . "</td>";
+									echo "<td>" . $result['username'] . "</td>";
+									echo "<td>" . $result['expiration_date'] . "</td>";
 									echo "<td>" . $result['created_at'] . "</td>";
 									echo "<td>" . $result['estimated_time'] . "</td>";
 									echo "<td>" . (! empty($result['time_served']) ? $result['time_served'] : $button) . "</td>";
@@ -543,12 +562,12 @@ $results = $db->getDataForTicketTable($user['admin_place_id']);
 								</tbody>
 								<tfoot>
 								<tr>
-									<th>User Name</th>
-									<th>Expiration Date</th>
-									<th>Ticket Number</th>
-									<th>Created At</th>
-									<th>Estimated Time</th>
-									<th>Time Served</th>
+									<th>Αριθμός Εισιτηρίου</th>
+									<th>Όνομα Χρήστη</th>
+									<th>Ημερομηνία Λήξης Εισιτηρίου</th>
+									<th>Ημερομηνία Δημιουργίας Εισιτηρίου</th>
+									<th>Εκτιμώμενος Χρόνος Εξυπηρέτησης</th>
+									<th>Ώρα Εξυπηρέτησης</th>
 								</tr>
 								</tfoot>
 							</table>

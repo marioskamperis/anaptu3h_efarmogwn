@@ -344,17 +344,17 @@ if ( ! empty($user)) {
 
 				<li><a href="index.php"><i class="fa fa-book"></i> <span>Γενικό Ταμπλό</span></a></li>
 				<li><a href="data.php"><i class="fa fa-book"></i> <span>Τρέχοντα Εισιτήρια</span></a></li>
-				<li class="treeview">-->
+				<li class="treeview">
 					<a href="#">
 						<i class="fa fa-laptop"></i>
-						<span>Προσωμοίωση Κίνησης</span>
+						<span>Προσομοίωση Κίνησης</span>
 						<i class="fa fa-angle-left pull-right"></i>
 					</a>
 					<ul class="treeview-menu">
 						<li><a href="Utilities/CreateDummyUsers.php"><i class="fa fa-circle-o"></i> Δημιουργία Χρηστών</a></li>
 						<li><a href="Utilities/PopulateDay.php"><i class="fa fa-circle-o"></i> Δημιουργία Εισιτηρίων</a></li>
 						<li><a href="Utilities/ServeTicketsEmulator.php"><i class="fa fa-circle-o"></i> Δημιουργία Κίνησης Ημέρας</a></li>
-						
+
 					</ul>
 				</li>
 

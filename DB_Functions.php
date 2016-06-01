@@ -585,7 +585,7 @@ VALUES(
 	public function getDataForTicketTable($place_id)
 	{
 		mysql_set_charset("utf8");
-		$sql = "SELECT 	user.id, user.name ,  place.name , ticket.id ,ticket.place_id ,ticket.user_id , ticket.expiration_date ,ticket.number,ticket.created_at,ticket.estimated_time, ticket.time_served
+		$sql = "SELECT 	 user.name as username ,  place.name , ticket.id ,ticket.place_id ,ticket.user_id , ticket.expiration_date ,ticket.number,ticket.created_at,ticket.estimated_time, ticket.time_served
 			FROM protereotitapp.ticket as ticket
 			INNER JOIN protereotitapp.users as user ON user.id=ticket.user_id
 			INNER JOIN protereotitapp.places as place ON place.id=ticket.place_id
