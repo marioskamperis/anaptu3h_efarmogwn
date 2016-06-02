@@ -517,7 +517,7 @@ VALUES(
 	 */
 	public function get_place($place_id)
 	{
-
+		mysql_set_charset("utf8");
 		$place_id = "SELECT * FROM protereotitapp.places WHERE id=  '$place_id' ;";
 		$ticket_res = mysql_query($place_id);
 		$ticket_redata = mysql_fetch_array($ticket_res);
@@ -530,7 +530,7 @@ VALUES(
 	 */
 	public function get_places()
 	{
-
+		mysql_set_charset("utf8");
 		$tickets = "SELECT * FROM protereotitapp.places ;";
 
 		$tickets_res = mysql_query($tickets);
@@ -565,6 +565,7 @@ VALUES(
 	public function get_tickets($place_id)
 	{
 
+		
 		if ( ! isset($place_id) || empty($place_id)) {
 			$tickets = "SELECT * FROM protereotitapp.ticket ;";
 		} else {
@@ -625,9 +626,18 @@ VALUES(
 		}else{
 			return false;
 		}
-
-	
 	}
+	public function getLastServedNumber($place_id)
+	{
+
+		$ticket = "SELECT max(number) as number FROM protereotitapp.ticket WHERE place_id = '$place_id' AND time_served IS NOT NULL
+;";
+		$ticket_res = mysql_query($ticket);
+		$ticket_redata = mysql_fetch_assoc($ticket_res);
+
+		return $ticket_redata;
+	}
+	
 }
 
 ?>

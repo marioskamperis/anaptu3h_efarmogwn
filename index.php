@@ -292,8 +292,8 @@ $place_average_time=$place['average_serve_time'];
 							<li class="user-header">
 								<img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 								<p>
-									Alexander Pierce - Web Developer
-									<small>Member since Nov. 2012</small>
+									<?php echo $user['name'] ?> - Δημόσιος Υπάλληλος
+<!--									<small>Member since Nov. 2012</small>-->
 								</p>
 							</li>
 							<!-- Menu Body -->
@@ -337,7 +337,7 @@ $place_average_time=$place['average_serve_time'];
 					<img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 				</div>
 				<div class="pull-left info">
-					<p><?php echo $user [name] . ":" . $user[email] ?></p>
+					<p><?php echo $place['name'] ?></p>
 					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 				</div>
 			</div>

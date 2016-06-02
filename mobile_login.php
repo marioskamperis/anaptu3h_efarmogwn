@@ -20,6 +20,7 @@ try {
 			// use is found
 			$response["error"] = false;
 			$response["uid"] = $user["unique_id"];
+			$response["user"]["id"] = $user["id"];
 			$response["user"]["name"] = $user["name"];
 			$response["user"]["email"] = $user["email"];
 			$response["user"]["created_at"] = $user["created_at"];
